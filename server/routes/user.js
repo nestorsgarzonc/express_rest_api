@@ -5,7 +5,19 @@ const _ = require('underscore')
 const app = express()
 
 app.get('/usuario', function (req, res) {
-    res.json('Hello W')
+    let desde = Number.parseInt(req.query.desde) || 0
+    let limite = Number.parseInt(req.query.limite) || 5
+    Usuario.find({ estado: true }, /*'nombre email'*/)
+        .skip(desde)
+        .limit(limite)
+        .exec((err, usuarios) => {
+            if (err) {
+                return res.status(400).json({ ok: false, err })
+            }
+            Usuario.count({ estado: true }, (err, counter) => {
+                res.json({ ok: true, counter, usuarios })
+            })
+        })
 })
 
 app.post('/usuario', function (req, res) {
@@ -46,8 +58,28 @@ app.put('/usuario/:id', function (req, res) {
 
 })
 
-app.delete('/usuario', function (req, res) {
-    res.json('Delete Hello')
+app.delete('/usuario/:id', function (req, res) {
+    let id = req.params.id
+    Usuario.findOneAndUpdate(id, { estado: false }, { new: true }, (err, deletedUser) => {
+        if (err) {
+            return res.status(400).json({
+                ok: false,
+                err
+            })
+        }
+        if (!deletedUser) {
+            return res.status(400).json({
+                ok: false,
+                error: {
+                    message: 'User not found'
+                }
+            })
+        }
+        res.json({
+            ok: true,
+            usuario: deletedUser
+        })
+    })
 })
 
 module.exports = app 
