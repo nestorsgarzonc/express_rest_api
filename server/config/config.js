@@ -17,6 +17,6 @@ let urlDB;
 if (process.env.NODE_ENV === 'dev') {
     urlDB = 'mongodb://127.0.0.1:27017/waffly'
 } else {
-    urlDB = 'mongodb+srv://admin-nw:Sebastian1@cluster0.txwjd.mongodb.net/waffly'
+    urlDB = process.env.MONGO_URI
 }
 process.env.URLDB = urlDB;
