@@ -14,7 +14,7 @@ app.get('/usuario', function (req, res) {
             if (err) {
                 return res.status(400).json({ ok: false, err })
             }
-            Usuario.count({ estado: true }, (err, counter) => {
+            Usuario.estimatedDocumentCount({ estado: true }, (__, counter) => {
                 res.json({ ok: true, counter, usuarios })
             })
         })
