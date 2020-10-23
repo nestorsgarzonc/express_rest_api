@@ -38,7 +38,7 @@ app.put('/upload/:tipo/:id', (req, res) => {
     }
 
     //Cambiar nombre archivo
-    let nombreArchivo = `${id}_${nombreArchivoCortado[0]}_${new Date().getMilliseconds()}.${extension}`
+    let nombreArchivo = `${id}__${new Date().getMilliseconds()}.${extension}`
     archivo.mv(`uploads/${tipo}/${nombreArchivo}`, (err) => {
         if (err) return res.status(500).json({ ok: false, message: err })
         if (tipo === 'usuarios') {
