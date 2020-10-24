@@ -8,7 +8,7 @@ let Categoria = require('../models/category')
 app.get('/categoria', verificaToken, (_, res) => {
     Categoria.find({})
         .sort()
-        .populate('usuario', 'nombre email')
+        .populate('usuario', 'first_name email')
         .exec((err, categorias) => {
             if (err) {
                 return res.status(400).json({
@@ -36,10 +36,10 @@ app.get('/categoria/:id', verificaToken, (req, res) => {
     })
 })
 
-app.post('/categoria', verificaToken, (req, res) => {
+app.post('/categoria', [verificaToken, verificaFreelancerRole], (req, res) => {
     let body = req.body
     let categoria = new Categoria({
-        descripcion: body.descripcion,
+        nombre: body.nombre,
         usuario: req.usuario._id
     })
     categoria.save((err, categoriaDB) => {
@@ -63,7 +63,7 @@ app.put('/categoria/:id', [verificaToken, verificaFreelancerRole], (req, res) =>
     let id = req.params.id
     let body = req.body
     let descCategoria = {
-        descripcion: body.descripcion
+        nombre: body.nombre
     }
     Categoria.findByIdAndUpdate(id, descCategoria, { new: true }, (err, categoriaDB) => {
         if (err) {

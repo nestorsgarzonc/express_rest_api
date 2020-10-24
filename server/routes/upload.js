@@ -15,7 +15,7 @@ app.put('/upload/:tipo/:id', (req, res) => {
     let id = req.params.id
 
     if (!req.files) {
-        return res.status(400).json({ ok: false, err: { message: 'No se ha seleccionado nungun archivo' } })
+        return res.status(400).json({ ok: false, err: { message: 'No se ha seleccionado ningun archivo' } })
     }
     let tiposValidos = ['servicios', 'usuarios']
     if (tiposValidos.indexOf(tipo) < 0) {
@@ -25,7 +25,7 @@ app.put('/upload/:tipo/:id', (req, res) => {
         })
     }
 
-    let archivo = req.files.archivo
+    let archivo = req.files.image
     let nombreArchivoCortado = archivo.name.split('.')
     let extension = nombreArchivoCortado[nombreArchivoCortado.length - 1]
     let extensionesValidas = ['png', 'jpg', 'jpeg']
