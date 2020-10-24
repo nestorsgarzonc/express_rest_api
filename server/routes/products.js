@@ -1,6 +1,6 @@
 const express = require('express')
 const { verificaToken } = require('../middlewares/authentication')
-let Producto = require('../models/product')
+let Producto = require('../models/service')
 
 let app = express()
 
@@ -11,8 +11,8 @@ app.get('/productos', verificaToken, (req, res) => {
         .sort()
         .skip(from)
         .limit(limit)
-        .populate('usuario', 'nombre email')
-        .populate('categoria', 'descripcion')
+        .populate('usuario', 'first_name email location img')
+        .populate('category', 'descripcion')
         .exec((err, product) => {
             if (err) {
                 return res.status(400).json({
@@ -29,8 +29,8 @@ app.get('/productos', verificaToken, (req, res) => {
 app.get('/productos/:id', verificaToken, (req, res) => {
     let id = req.params.id
     Producto.findById(id)
-        .populate('usuario', 'nombre email')
-        .populate('categoria', 'descripcion')
+        .populate('usuario', 'first_name email location img')
+        .populate('category', 'descripcion')
         .exec((err, product) => {
             if (err) {
                 return res.status(500).json({
@@ -64,12 +64,13 @@ app.get('/productos/buscar/:termino', verificaToken, (req, res) => {
 app.post('/productos', verificaToken, (req, res) => {
     let body = req.body
     let product = new Producto({
-        nombre: body.nombre,
-        precioUni: body.precioUni,
-        descripcion: body.descripcion,
-        disponible: body.disponible,
-        categoria: body.categoria,
-        usuario: req.usuario._id,
+        name: body.name,
+        price: body.price,
+        description: body.description,
+        isAvaliable: body.isAvaliable,
+        category: body.category,
+        user: req.usuario._id,
+        img: body.img,
     })
     product.save((err, productDB) => {
         if (err) {
@@ -98,11 +99,14 @@ app.put('/productos/:id', verificaToken, (req, res) => {
         if (!productDB) {
             return res.status(500).json({ ok: false, productDB })
         }
-        productDB.nombre = body.nombre
-        productDB.precioUni = body.precioUni
-        productDB.descripcion = body.descripcion
-        productDB.disponible = body.disponible
-        productDB.categoria = body.categoria
+
+        productDB.name = body.name
+        productDB.price = body.price
+        productDB.description = body.description
+        productDB.isAvaliable = body.isAvaliable
+        productDB.category = body.category
+        productDB.img = body.img
+
         productDB.save((err2, productSaved) => {
             if (err2) {
                 return res.status(500).json({ ok: false, err })
@@ -115,8 +119,8 @@ app.put('/productos/:id', verificaToken, (req, res) => {
 app.delete('/productos/:id', verificaToken, (req, res) => {
     let id = req.params.id
     Producto.findByIdAndUpdate(id, { disponible: false }, { new: true })
-        .populate('usuario', 'nombre email')
-        .populate('categoria', 'descripcion')
+        .populate('usuario', 'first_name email location img')
+        .populate('category', 'descripcion')
         .exec((err, deletedProduct) => {
             if (err) {
                 return res.status(400).json({

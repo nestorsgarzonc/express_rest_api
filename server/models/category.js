@@ -17,8 +17,6 @@ let CategoriaSchema = new Schema({
 });
 
 
-CategoriaSchema.plugin(uniqueValidator, {
-    message: '{PATH} ya existe'
-})
+CategoriaSchema.plugin(uniqueValidator, { message: '{PATH} ya existe' })
 
 module.exports = mongoose.model('Categoria', CategoriaSchema);

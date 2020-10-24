@@ -16,10 +16,10 @@ let verificaToken = (req, res, next) => {
     //res.json({ token })
 }
 
-let verificaAdminRole = (req, res, next) => {
+let verificaFreelancerRole = (req, res, next) => {
     let user = req.usuario
-    if (user.role !== 'ADMIN_ROLE') {
-        return res.json({ ok: false, err: { message: 'El usuario no es admin' } })
+    if (user.role !== 'FREELANCER') {
+        return res.json({ ok: false, err: { message: 'El usuario no es freelancer' } })
     }
     next()
 }
@@ -36,4 +36,4 @@ let verificaTokenImg = (req, res, next) => {
 }
 
 
-module.exports = { verificaToken, verificaAdminRole, verificaTokenImg }
+module.exports = { verificaToken, verificaFreelancerRole, verificaTokenImg }

@@ -4,8 +4,9 @@ const fs = require('fs')
 const path = require('path')
 
 const app = express()
+
 const Usuario = require('../models/user')
-const Producto = require('../models/product')
+const Producto = require('../models/service')
 
 app.use(fileUpload({ useTempFiles: true }));
 
@@ -16,7 +17,7 @@ app.put('/upload/:tipo/:id', (req, res) => {
     if (!req.files) {
         return res.status(400).json({ ok: false, err: { message: 'No se ha seleccionado nungun archivo' } })
     }
-    let tiposValidos = ['productos', 'usuarios']
+    let tiposValidos = ['servicios', 'usuarios']
     if (tiposValidos.indexOf(tipo) < 0) {
         return res.status(400).json({
             ok: false,
@@ -27,7 +28,7 @@ app.put('/upload/:tipo/:id', (req, res) => {
     let archivo = req.files.archivo
     let nombreArchivoCortado = archivo.name.split('.')
     let extension = nombreArchivoCortado[nombreArchivoCortado.length - 1]
-    let extensionesValidas = ['png', 'jpg', 'gif', 'jpeg']
+    let extensionesValidas = ['png', 'jpg', 'jpeg']
 
     if (extensionesValidas.indexOf(extension) < 0) {
         return res.status(400).json({
@@ -82,7 +83,6 @@ const imagenProducto = (id, res, nombreArchivo) => {
             res.json({ ok: true, producto: productSaved, img: nombreArchivo })
         })
     })
-
 }
 
 function deleteFile(nombreImagen, tipo) {
@@ -90,7 +90,6 @@ function deleteFile(nombreImagen, tipo) {
     if (fs.existsSync(pathImage)) {
         fs.unlinkSync(pathImage)
     }
-
 }
 
 module.exports = app

@@ -4,31 +4,37 @@ const bcrypt = require('bcrypt')
 const _ = require('underscore')
 const app = express()
 
-const { verificaToken, verificaAdminRole } = require('../middlewares/authentication')
+const { verificaToken } = require('../middlewares/authentication')
 
-app.get('/usuario', verificaToken, (req, res) => {
+app.get('/usuario', (req, res) => {
     let desde = Number.parseInt(req.query.desde) || 0
     let limite = Number.parseInt(req.query.limite) || 5
-    Usuario.find({ estado: true }, /*'nombre email'*/)
+    Usuario.find({ status: true }, /*'nombre email'*/)
         .skip(desde)
         .limit(limite)
         .exec((err, usuarios) => {
             if (err) {
                 return res.status(400).json({ ok: false, err })
             }
-            Usuario.estimatedDocumentCount({ estado: true }, (__, counter) => {
+            Usuario.estimatedDocumentCount({ status: true }, (__, counter) => {
                 res.json({ ok: true, counter, usuarios })
             })
         })
 })
 
-app.post('/usuario', [verificaToken, verificaAdminRole], (req, res) => {
+app.post('/usuario', (req, res) => {
     let body = req.body
     let usuario = new Usuario({
-        nombre: body.nombre,
+        first_name: body.first_name,
+        last_name: body.last_name,
+        username: body.username,
         email: body.email,
         password: bcrypt.hashSync(body.password, 10),
-        role: body.role
+        location: body.location,
+        gender: body.gender,
+        img: body.img,
+        role: body.role,
+        status: body.status
     })
     usuario.save((err, usuarioDB) => {
         if (err) {
@@ -41,9 +47,9 @@ app.post('/usuario', [verificaToken, verificaAdminRole], (req, res) => {
     })
 })
 
-app.put('/usuario/:id', [verificaToken, verificaAdminRole], (req, res) => {
+app.put('/usuario/:id', [verificaToken], (req, res) => {
     let id = req.params.id;
-    let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado'])
+    let body = _.pick(req.body, ['first_name', 'last_name', 'email', 'img', 'role', 'status', 'location', 'gender', 'username'])
     Usuario.findByIdAndUpdate(id, body, { new: true }, (err, userDB) => {
         if (err) {
             return res.status(400).json({
@@ -60,9 +66,9 @@ app.put('/usuario/:id', [verificaToken, verificaAdminRole], (req, res) => {
 
 })
 
-app.delete('/usuario/:id', [verificaToken, verificaAdminRole], (req, res) => {
+app.delete('/usuario/:id', [verificaToken], (req, res) => {
     let id = req.params.id
-    Usuario.findOneAndUpdate(id, { estado: false }, { new: true }, (err, deletedUser) => {
+    Usuario.findOneAndUpdate(id, { status: false }, { new: true }, (err, deletedUser) => {
         if (err) {
             return res.status(400).json({
                 ok: false,

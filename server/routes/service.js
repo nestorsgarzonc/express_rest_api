@@ -1,5 +1,5 @@
 const express = require('express')
-let { verificaToken, verificaAdminRole } = require('../middlewares/authentication')
+let { verificaToken, verificaFreelancerRole } = require('../middlewares/authentication')
 
 let app = express()
 
@@ -59,7 +59,7 @@ app.post('/categoria', verificaToken, (req, res) => {
     })
 })
 
-app.put('/categoria/:id', [verificaToken, verificaAdminRole], (req, res) => {
+app.put('/categoria/:id', [verificaToken, verificaFreelancerRole], (req, res) => {
     let id = req.params.id
     let body = req.body
     let descCategoria = {
@@ -82,7 +82,7 @@ app.put('/categoria/:id', [verificaToken, verificaAdminRole], (req, res) => {
     })
 })
 
-app.delete('/categoria/:id', [verificaToken, verificaAdminRole], (req, res) => {
+app.delete('/categoria/:id', [verificaToken, verificaFreelancerRole], (req, res) => {
     let id = req.params.id
     Categoria.findByIdAndDelete(id, (err, categoriaDB) => {
         if (err) {
