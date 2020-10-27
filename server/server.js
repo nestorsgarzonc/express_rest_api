@@ -6,6 +6,8 @@ const path = require('path')
 
 const app = express()
 
+app.disable("x-powered-by")
+
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 

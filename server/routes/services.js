@@ -12,7 +12,7 @@ app.get('/productos', verificaToken, (req, res) => {
         .skip(from)
         .limit(limit)
         .populate('usuario', 'first_name email location img')
-        .populate('category', 'descripcion')
+        .populate('category', 'nombre')
         .exec((err, product) => {
             if (err) {
                 return res.status(400).json({
@@ -30,7 +30,7 @@ app.get('/productos/:id', verificaToken, (req, res) => {
     let id = req.params.id
     Producto.findById(id)
         .populate('usuario', 'first_name email location img')
-        .populate('category', 'descripcion')
+        .populate('category', 'nombre')
         .exec((err, product) => {
             if (err) {
                 return res.status(500).json({
@@ -120,7 +120,7 @@ app.delete('/productos/:id', verificaToken, (req, res) => {
     let id = req.params.id
     Producto.findByIdAndUpdate(id, { disponible: false }, { new: true })
         .populate('usuario', 'first_name email location img')
-        .populate('category', 'descripcion')
+        .populate('category', 'nombre')
         .exec((err, deletedProduct) => {
             if (err) {
                 return res.status(400).json({
